@@ -3,4 +3,4 @@ DOCKER_DOWN = docker-compose down
 DOCKER_RESTART = docker-compose restart
 
 deploy:
-	sudo ${DOCKER_DOWN} && ${DOCKER_UP} && ${DOCKER_RESTART}
+	sudo ${DOCKER_DOWN} && ${DOCKER_UP} && ${DOCKER_RESTART} --build
