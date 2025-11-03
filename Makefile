@@ -1,4 +1,4 @@
-DOCKER_UP=docker-compose up --build
+DOCKER_UP=docker-compose up
 DOCKER_DOWN = docker-compose down
 DOCKER_RESTART = docker-compose restart
 
