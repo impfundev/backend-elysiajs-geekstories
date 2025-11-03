@@ -30,18 +30,6 @@ nav > :is(ol, ul) > li > :only-child {
   flex: none;
 }
 
-.backdrop-blur {
-  background-color: #00000080 !important;
-}
-
-.backdrop-blur {
-  --_blur: 1rem;
-  -webkit-backdrop-filter: blur(var(--_blur));
-  backdrop-filter: blur(var(--_blur));
-  color: var(--on-surface);
-  background-color: #ffffff80 !important;
-}
-
 body {
   font-size: 16px !important;
   background-color: var(--surface-container-lowest) !important;

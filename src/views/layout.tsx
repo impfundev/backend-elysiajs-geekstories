@@ -31,7 +31,7 @@ export const WebLayout = ({
         />
       </head>
       <body>
-        <header class="fixed top responsive backdrop-blur">
+        <header class="fixed top responsive">
           <nav>
             <div class="max">
               <a href="/" class="chip transparent">
