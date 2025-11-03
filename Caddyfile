@@ -1,19 +1,22 @@
-localhost {
-	# Tampilkan log
-	log
+# KONFIGURASI YANG BENAR UNTUK CLOUDFLARE "FLEXIBLE"
 
-	# Aktifkan kompresi
-	encode zstd gzip
+# Menambahkan 'http://' memaksa Caddy HANYA melayani port 80
+# dan mematikan 'Automatic HTTPS'
+http://geekstories.tech {
+    # Tampilkan log
+    log
 
-	# Tambahkan header keamanan
-	header {
-		X-Frame-Options "SAMEORIGIN"
-		X-Content-Type-Options "nosniff"
-		-Server
-		Cache-Control max-age=31536000
-	}
+    # Aktifkan kompresi
+    encode zstd gzip
 
-	# Proxy semua request ke service 'backend' di port 3000
-	# 'backend' adalah nama service di docker-compose.yml
-	reverse_proxy backend:3000
+    # Tambahkan header keamanan
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        -Server
+        Cache-Control max-age=31536000
+    }
+
+    # Proxy semua request ke service 'backend' di port 3000
+    reverse_proxy backend:3000
 }
