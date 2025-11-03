@@ -1,27 +1,40 @@
 import { Html } from "@elysiajs/html";
 import { Site } from "../entities";
+import { Sidebar } from "./ui/sidebar";
 
 interface WebLayoutProps {
   title: string;
+  description: string;
   site: Site;
   children: JSX.Element;
 }
 
-export const WebLayout = ({ title, site, children }: WebLayoutProps) => {
+export const WebLayout = ({
+  title,
+  site,
+  children,
+  description,
+}: WebLayoutProps) => {
   return (
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
-
-        <link rel="stylesheet" href="/public/main.css" />
+        <meta name="description" content={description} />
+        <link
+          rel="preload"
+          href="/public/material-symbols-outlined-wsekpst3.woff2"
+          as="font"
+          type="font/woff2"
+          crossorigin="anonymous"
+        />
       </head>
       <body>
-        <header class="fixed top">
+        <header class="fixed top responsive backdrop-blur">
           <nav>
             <div class="max">
-              <a href="/" class="chip transparent no-border">
+              <a href="/" class="chip transparent">
                 <strong>{site.name}</strong>
               </a>
             </div>
@@ -29,38 +42,13 @@ export const WebLayout = ({ title, site, children }: WebLayoutProps) => {
               <i>menu_open</i>
             </button>
           </nav>
+          <Sidebar />
         </header>
 
         {children}
-
-        <dialog class="right" id="dialog-right">
-          <div class="right-align">
-            <button class="chip" data-ui="#dialog-right">
-              <i>close</i>
-            </button>
-          </div>
-          <ul class="list">
-            <li class="middle-align">
-              <a href="/">
-                <i>home</i>
-                <span>Home</span>
-              </a>
-            </li>
-            <li class="middle-align">
-              <a href="/topics/">
-                <i>sell</i>
-                <span>Topics</span>
-              </a>
-            </li>
-            <li class="middle-align">
-              <a href="#">
-                <i>search</i>
-                <span>Search</span>
-              </a>
-            </li>
-          </ul>
-        </dialog>
-        <script src="/public/main.js"></script>
+        <div class="overlay"></div>
+        <script defer src="/public/highlighter.js"></script>
+        <script defer src="/public/main.js"></script>
       </body>
     </html>
   );

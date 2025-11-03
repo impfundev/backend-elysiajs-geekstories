@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     console.warn("Web Share API not supported. Using fallback modal.");
     btn.style.display = "block";
-    console.log("URL", url);
     btn.addEventListener("click", () => {
       setupFallbackModal(url, title);
     });
@@ -60,7 +59,22 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollToTopBtn.addEventListener("click", goToTop);
   }
 
-  initCommentGiscus();
+  const commentBtn = document.getElementById("open_comment");
+  const container = document.getElementById("comment_dialog");
+  if (!commentBtn || !container) {
+    console.warn("Elemen Giscus (tombol atau kontainer) tidak ditemukan.");
+    return;
+  }
+
+  let hasLoaded = false;
+  commentBtn.addEventListener(
+    "click",
+    () => {
+      initCommentGiscus(hasLoaded);
+      hasLoaded = true;
+    },
+    { once: false }
+  );
 });
 
 const goToTop = () => {
@@ -129,39 +143,25 @@ function setupFallbackModal(url: string, title: string) {
   }
 }
 
-function initCommentGiscus() {
-  const commentBtn = document.getElementById("open_comment");
+function initCommentGiscus(hasLoaded: boolean) {
+  if (hasLoaded) return;
   const container = document.getElementById("comment_dialog");
-  if (!commentBtn || !container) {
-    console.warn("Elemen Giscus (tombol atau kontainer) tidak ditemukan.");
-    return;
-  }
-
-  let hasLoaded = false;
-
-  commentBtn.addEventListener(
-    "click",
-    () => {
-      if (hasLoaded) return;
-      const script = document.createElement("script");
-      script.src = "https://giscus.app/client.js";
-      script.setAttribute("data-repo", "impfundev/geekstories-discussion");
-      script.setAttribute("data-repo-id", "R_kgDOQFjFnw");
-      script.setAttribute("data-category", "General");
-      script.setAttribute("data-category-id", "DIC_kwDOQFjFn84Cw2Gq");
-      script.setAttribute("data-mapping", "pathname");
-      script.setAttribute("data-strict", "0");
-      script.setAttribute("data-reactions-enabled", "1");
-      script.setAttribute("data-emit-metadata", "0");
-      script.setAttribute("data-input-position", "bottom");
-      script.setAttribute("data-theme", "preferred_color_scheme");
-      script.setAttribute("data-lang", "en");
-      script.setAttribute("data-loading", "lazy");
-      script.setAttribute("crossorigin", "anonymous");
-      script.setAttribute("async", "async");
-      container.appendChild(script);
-      hasLoaded = true;
-    },
-    { once: false }
-  );
+  if (!container) return;
+  const script = document.createElement("script");
+  script.src = "https://giscus.app/client.js";
+  script.setAttribute("data-repo", "impfundev/geekstories-discussion");
+  script.setAttribute("data-repo-id", "R_kgDOQFjFnw");
+  script.setAttribute("data-category", "General");
+  script.setAttribute("data-category-id", "DIC_kwDOQFjFn84Cw2Gq");
+  script.setAttribute("data-mapping", "pathname");
+  script.setAttribute("data-strict", "0");
+  script.setAttribute("data-reactions-enabled", "1");
+  script.setAttribute("data-emit-metadata", "0");
+  script.setAttribute("data-input-position", "bottom");
+  script.setAttribute("data-theme", "preferred_color_scheme");
+  script.setAttribute("data-lang", "en");
+  script.setAttribute("data-loading", "lazy");
+  script.setAttribute("crossorigin", "anonymous");
+  script.setAttribute("defer", "defer");
+  container.appendChild(script);
 }

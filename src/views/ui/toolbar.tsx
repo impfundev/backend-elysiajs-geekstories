@@ -3,7 +3,7 @@ import { Html } from "@elysiajs/html";
 export const PageToolbar = () => (
   <>
     <div class="fixed bottom right margin padding">
-      <nav>
+      <nav class="toolbar">
         <button class="medium circle" id="page_up">
           <i>arrow_upward</i>
           <div class="tooltip">Return to top</div>

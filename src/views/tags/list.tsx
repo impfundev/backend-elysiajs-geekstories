@@ -2,6 +2,7 @@ import { Html } from "@elysiajs/html";
 import { WebLayout } from "../layout";
 import { Site, Tag } from "../../entities";
 import { getImageData } from "../../utils/cloudinary";
+import { Footer } from "../ui/footer";
 
 interface TagsListProps {
   title: string;
@@ -11,7 +12,7 @@ interface TagsListProps {
 
 export const TagsList = ({ title, site, tags }: TagsListProps) => {
   return (
-    <WebLayout title={title} site={site}>
+    <WebLayout title={title} site={site} description={"List of topics"}>
       <main class="responsive">
         {tags.map((tag) => {
           const imageWidth = 768;
@@ -57,9 +58,13 @@ export const TagsList = ({ title, site, tags }: TagsListProps) => {
                   </article>
                 </div>
               </div>
+
+              <hr class="transparent space" />
             </div>
           );
         })}
+        <hr class="transparent large-space" />
+        <Footer site={site} />
       </main>
     </WebLayout>
   );

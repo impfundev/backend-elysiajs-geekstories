@@ -1,0 +1,19 @@
+localhost {
+	# Tampilkan log
+	log
+
+	# Aktifkan kompresi
+	encode zstd gzip
+
+	# Tambahkan header keamanan
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		-Server
+		Cache-Control max-age=31536000
+	}
+
+	# Proxy semua request ke service 'backend' di port 3000
+	# 'backend' adalah nama service di docker-compose.yml
+	reverse_proxy backend:3000
+}

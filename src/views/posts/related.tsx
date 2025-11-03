@@ -11,7 +11,11 @@ export const PostList = ({
 }) => {
   return (
     <article class="round large-padding">
-      <h5>{title}</h5>
+      <div class="bottom-margin">
+        <span class="chip no-margin">
+          <b>{title}</b>
+        </span>
+      </div>
       <hr class="transparent space" />
       <div class="grid">
         {posts.map((post) => {

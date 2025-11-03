@@ -63,7 +63,10 @@ export function getImageData(
     if (publicId) {
       const widths = [320, 480, 640, 768, 1024, 1280];
       imageSrcset = widths
-        .map((w) => `${getTransformedUrl(publicId, w)} ${w}w`)
+        .map((w) => {
+          const url = getTransformedUrl(publicId, w);
+          return `${proxyCloudinaryUrl(url)} ${w}w`;
+        })
         .join(", ");
       imageUrl = getTransformedUrl(publicId, width, height);
     } else {

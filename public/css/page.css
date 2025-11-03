@@ -1,0 +1,130 @@
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+:is(nav, .row, .max) > :only-child,
+nav > :is(ol, ul) > li > :only-child {
+  margin: 0;
+}
+
+:is(button, .button):is(.square, .circle) {
+  --_padding: 0;
+}
+
+:is(.button, button):is(.extra, .extend) {
+  --_size: 3.5rem;
+  font-size: 1rem;
+  --_padding: 1.5rem;
+}
+
+:is(.circle, .square):is(button, .button, .chip) {
+  padding: 0;
+  block-size: var(--_size);
+  inline-size: var(--_size);
+}
+
+:is(nav, .row) > :not(ul, ol, header, footer) {
+  margin: 0;
+  white-space: normal;
+  flex: none;
+}
+
+.backdrop-blur {
+  background-color: #00000080 !important;
+}
+
+.backdrop-blur {
+  --_blur: 1rem;
+  -webkit-backdrop-filter: blur(var(--_blur));
+  backdrop-filter: blur(var(--_blur));
+  color: var(--on-surface);
+  background-color: #ffffff80 !important;
+}
+
+body {
+  font-size: 16px !important;
+  background-color: var(--surface-container-lowest) !important;
+}
+
+p {
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-optical-sizing: auto;
+  font-weight: 600 !important;
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+h3 {
+  margin-top: 56px !important;
+}
+
+b,
+strong {
+  font-family: "Zalando Sans SemiExpanded", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600 !important;
+}
+
+a {
+  color: var(--primary) !important;
+}
+
+ol,
+ul {
+  margin-top: 16px;
+}
+
+ol {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: item;
+  display: block;
+  list-style-type: decimal;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  padding-inline-start: 40px;
+  unicode-bidi: isolate;
+}
+
+ol > li,
+ul > li {
+  margin-top: 4px;
+  margin-bottom: 20px;
+  margin-left: 36px;
+  counter-increment: item;
+}
+
+li[Attributes Style] {
+  direction: ltr;
+}
+
+[dir="ltr" i] {
+  unicode-bidi: isolate;
+}
+
+li {
+  display: list-item;
+  unicode-bidi: isolate;
+}
+
+@media screen and (min-width: 1295px) {
+  ol {
+    max-width: 760px;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  .grid .first {
+    grid-row: 1;
+  }
+}

@@ -1,8 +1,9 @@
+import { Post, Site } from "../../entities";
 import { Html } from "@elysiajs/html";
-import { Post, Site } from "../entities";
-import { WebLayout } from "./layout";
-import { getImageData } from "../utils/cloudinary";
-import { PostList } from "./posts/related";
+import { WebLayout } from "../layout";
+import { getImageData } from "../../utils/cloudinary";
+import { PostList } from "../posts/related";
+import { Footer } from "./footer";
 
 interface ListPageProps {
   title: string;
@@ -27,11 +28,16 @@ export const ListPage = ({
   );
 
   return (
-    <WebLayout title={title} site={site}>
+    <WebLayout
+      title={title}
+      site={site}
+      description={description || site.description}
+    >
       <>
         <main class="responsive">
           <h1>{title}</h1>
           <p>{description}</p>
+          <hr class="transparent medium-space" />
           {firstPost && (
             <section class="grid">
               <div class="s12 m6 l6">
@@ -39,8 +45,8 @@ export const ListPage = ({
                   <article class="no-elevate round large large-padding middle-align">
                     <div class="large-padding">
                       <h1 class="large">{firstPost.title}</h1>
-                      <h6>{firstPost.description}</h6>
-                      <nav>
+                      <p>{firstPost.description}</p>
+                      <nav class="top-margin">
                         <a href={`/post/${firstPost.slug}`} class="chip extra">
                           Read more
                         </a>
@@ -69,9 +75,12 @@ export const ListPage = ({
               </div>
             </section>
           )}
+          <hr class="transparent medium-space" />
           <section>
             <PostList title="Latest" posts={posts.slice(1)} />
           </section>
+          <hr class="transparent large-space" />
+          <Footer site={site} />
         </main>
       </>
     </WebLayout>

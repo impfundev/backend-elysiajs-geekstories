@@ -3,7 +3,8 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts"
   },
   "dependencies": {
     "@cloudinary/url-gen": "^1.22.0",
@@ -15,13 +16,19 @@
     "beercss": "^3.12.13",
     "cloudinary": "^2.8.0",
     "elysia": "latest",
+    "highlight.js": "^11.11.1",
+    "jsdom": "^27.1.0",
     "logixlysia": "^5.2.0",
     "moment": "^2.30.1",
+    "prismjs": "^1.30.0",
+    "purgecss": "^7.0.2",
     "reflect-metadata": "^0.2.2",
     "sqlite3": "^5.1.7",
     "typeorm": "^0.3.27"
   },
   "devDependencies": {
+    "@types/jsdom": "^27.0.0",
+    "@types/prismjs": "^1.26.5",
     "bun-types": "latest"
   },
   "module": "src/index.js"

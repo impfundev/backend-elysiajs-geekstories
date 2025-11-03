@@ -1,0 +1,44 @@
+# docker-compose.yml
+
+version: "3.8"
+
+services:
+  # 1. Service Backend (Elysia.js)
+  backend:
+    build: . # Build dari Dockerfile di direktori ini
+    container_name: elysia_backend
+    env_file:
+      - .env # Muat environment variables dari file .env
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  # 2. Service Caddy (Reverse Proxy)
+  caddy:
+    image: caddy:latest
+    container_name: caddy_proxy
+    ports:
+      - "80:80" # Port HTTP
+      - "443:443" # Port HTTPS
+    volumes:
+      # Mount Caddyfile kita ke dalam container
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      # Buat volume permanen untuk data Caddy (sertifikat SSL)
+      - caddy_data:/data
+      # Volume untuk konfigurasi Caddy
+      - caddy_config:/config
+    depends_on:
+      - backend # Caddy akan menunggu backend siap
+    restart: unless-stopped
+    networks:
+      - app_network
+
+# Jaringan internal agar container bisa saling bicara
+networks:
+  app_network:
+    driver: bridge
+
+# Volume permanen untuk Caddy
+volumes:
+  caddy_data:
+  caddy_config:

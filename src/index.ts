@@ -1,9 +1,4 @@
 import { Elysia } from "elysia";
-import { user } from "./controllers/user";
-import { posts } from "./controllers/posts";
-import { tags } from "./controllers/tags";
-import { sites } from "./controllers/site";
-
 import { openapi } from "@elysiajs/openapi";
 import { staticPlugin } from "@elysiajs/static";
 import { cors } from "@elysiajs/cors";
@@ -13,20 +8,20 @@ import { initdatabase } from "./config/database";
 import { api } from "./controllers";
 import { web } from "./views";
 import { cloudinaryProxy } from "./controllers/proxy/cloudinary";
+import { buildAsset } from "./utils/buildAsset";
 
 initdatabase();
-
-Bun.build({
-  entrypoints: ["./assets/main.ts"],
-  outdir: "./public",
-  minify: true,
-})
-  .then((res) => console.log("Asset Initialized"))
-  .catch((error) => console.error(`Asset failed to initialized ${error}`));
+buildAsset();
 
 const app = new Elysia()
   .use(openapi())
-  .use(staticPlugin())
+  .use(
+    staticPlugin({
+      headers: {
+        "Cache-Control": "max-age=31536000",
+      },
+    })
+  )
   .use(cors())
   .use(api)
   .use(web)
@@ -46,7 +41,10 @@ const app = new Elysia()
       },
     })
   )
-  .listen(3000);
+  .listen({
+    hostname: "0.0.0.0",
+    port: 3000,
+  });
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
