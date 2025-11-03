@@ -1,7 +1,7 @@
 # Dockerfile
 
 # 1. Gunakan image resmi Bun
-FROM oven/bun:latest
+FROM docker.io/oven/bun:latest
 
 # 2. Set direktori kerja di dalam container
 WORKDIR /app
