@@ -23,41 +23,43 @@ export const HomePage = ({ posts, site }: HomePageProps) => {
   return (
     <WebLayout title="Home" description={site.description} site={site}>
       <main class="responsive">
-        <section class="grid">
-          <div class="s12 m6 l6">
-            <div class="page bottom active">
-              <article class="no-elevate round large large-padding middle-align">
-                <div class="large-padding">
-                  <h1 class="large">{firstPost.title}</h1>
-                  <p>{firstPost.description}</p>
-                  <nav class="top-margin">
-                    <a href={`/post/${firstPost.slug}`} class="chip extra">
-                      Read more
-                    </a>
-                  </nav>
-                </div>
-              </article>
+        {firstPost && (
+          <section class="grid">
+            <div class="s12 m6 l6">
+              <div class="page bottom active">
+                <article class="no-elevate round large large-padding middle-align">
+                  <div class="large-padding">
+                    <h1 class="large">{firstPost.title}</h1>
+                    <p>{firstPost.description}</p>
+                    <nav class="top-margin">
+                      <a href={`/post/${firstPost.slug}`} class="chip extra">
+                        Read more
+                      </a>
+                    </nav>
+                  </div>
+                </article>
+              </div>
             </div>
-          </div>
-          <div class="s12 m6 l6">
-            <div class="page top active">
-              <article class="no-elevate round large no-padding">
-                {imageUrl && (
-                  <img
-                    src={imageUrl}
-                    alt={firstPost.title}
-                    width={imageWidth}
-                    height={imageHeight}
-                    class="responsive"
-                    fetchpriority="high"
-                    srcset={imageSrcset}
-                    loading="eager"
-                  />
-                )}
-              </article>
+            <div class="s12 m6 l6">
+              <div class="page top active">
+                <article class="no-elevate round large no-padding">
+                  {imageUrl && (
+                    <img
+                      src={imageUrl}
+                      alt={firstPost.title}
+                      width={imageWidth}
+                      height={imageHeight}
+                      class="responsive"
+                      fetchpriority="high"
+                      srcset={imageSrcset}
+                      loading="eager"
+                    />
+                  )}
+                </article>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
         <hr class="transparent medium-space" />
         <section>
           <PostList title="Latest" posts={posts.slice(1)} />
