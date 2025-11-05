@@ -12,6 +12,10 @@ services:
     restart: unless-stopped
     networks:
       - app_network
+    volumes:
+      # 'db_data' adalah nama volume yang kita buat di bawah
+      # '/app/data' adalah path di dalam container yang kita set di TypeORM
+      - db_data:/app/data
 
   # 2. Service Caddy (Reverse Proxy)
   caddy:
@@ -42,3 +46,5 @@ networks:
 volumes:
   caddy_data:
   caddy_config:
+  db_data:
+    driver: local
