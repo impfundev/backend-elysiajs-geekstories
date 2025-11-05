@@ -4,3 +4,6 @@ DOCKER_RESTART = docker-compose restart
 
 deploy:
 	sudo ${DOCKER_DOWN} && ${DOCKER_UP} --build && ${DOCKER_RESTART}
+
+createuser:
+	sudo bun createuser
