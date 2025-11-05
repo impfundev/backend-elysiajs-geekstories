@@ -1,4 +1,4 @@
-import "prismjs/themes/prism-dark.min.css";
+import "prismjs/themes/prism-tomorrow.min.css";
 import { highlightAll } from "prismjs";
 import "prismjs/components/prism-javascript.min.js";
 import "prismjs/components/prism-css.min.js";
