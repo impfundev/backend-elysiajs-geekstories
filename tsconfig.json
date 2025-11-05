@@ -14,5 +14,6 @@
     "jsxFactory": "Html.createElement",
     "jsxFragmentFactory": "Html.Fragment",
     "plugins": [{ "name": "@kitajs/ts-html-plugin" }]
-  }
+  },
+  "exclude": ["node_modules", "**/*.spec.ts", "src/assets/client/**/*"]
 }

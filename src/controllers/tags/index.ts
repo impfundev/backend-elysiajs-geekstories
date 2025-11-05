@@ -21,19 +21,10 @@ export const tags = new Elysia({ prefix: "tag" })
   .get("/get_list", async ({ jwt, query, cookie: { session } }) => {
     const isAuthenticate = await jwt.verify(String(session.value));
     if (!isAuthenticate) return status(401, "Unauthorized");
-
-    const select = {
-      id: true,
-      name: true,
-      slug: true,
-      create_at: true,
-      update_at: true,
-    };
     const order = { update_at: "DESC" };
     return await getList({
       query,
       entity: Tag,
-      select,
       order,
     });
   })

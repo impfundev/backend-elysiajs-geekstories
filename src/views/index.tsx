@@ -7,9 +7,15 @@ import { ListPage } from "./ui/list";
 import { TagsList } from "./tags/list";
 import { render } from "../utils/shortcuts";
 import { In, Not } from "typeorm";
+import { AdminPanel } from "./admin";
+import { App } from "../assets/client/main";
 
 export const web = new Elysia()
   .use(html())
+  .get("/admin", async () => {
+    if (process.env.ENV === "development") console.log(App);
+    return <AdminPanel />;
+  })
   .get("/", async () => {
     const posts = await Post.find({ take: 10, where: { published: true } });
     const site = await Site.findOneBy({ is_used: true });
