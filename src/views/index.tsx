@@ -13,7 +13,7 @@ export const web = new Elysia()
   .get("/", async () => {
     const posts = await Post.find({ take: 10, where: { published: true } });
     const site = await Site.findOneBy({ is_used: true });
-    if (!site) throw status(400, "Post not found");
+    if (!site) throw status(400, "Site not found");
     return render(<HomePage posts={posts} site={site} />);
   })
   .get("/tag/:slug", async ({ params: { slug } }) => {
@@ -26,7 +26,7 @@ export const web = new Elysia()
 
     const posts = tag.posts;
     const site = await Site.findOneBy({ is_used: true });
-    if (!site) throw status(400, "Post not found");
+    if (!site) throw status(400, "Tag not found");
 
     return render(
       <ListPage
@@ -45,7 +45,7 @@ export const web = new Elysia()
       where: { author: { id: author.id }, published: true },
     });
     const site = await Site.findOneBy({ is_used: true });
-    if (!site) throw status(400, "Page not found");
+    if (!site) throw status(400, "Site not found");
 
     return render(
       <ListPage
@@ -85,7 +85,7 @@ export const web = new Elysia()
   .get("/topics/", async () => {
     const tags = await Tag.find({ take: 10 });
     const site = await Site.findOneBy({ is_used: true });
-    if (!site) throw status(400, "Post not found");
+    if (!site) throw status(400, "Site not found");
 
     return render(<TagsList title="Topics" site={site} tags={tags} />);
   });
