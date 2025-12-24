@@ -2,25 +2,55 @@ import { Elysia, t } from "elysia";
 import { v2 as cloudinary } from "cloudinary";
 import jwt from "@elysiajs/jwt";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+const {
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+  JWT_SECRET,
+} = process.env;
+
+const isCloudinaryConfigured = !!(
+  CLOUDINARY_CLOUD_NAME &&
+  CLOUDINARY_API_KEY &&
+  CLOUDINARY_API_SECRET
+);
+
+if (isCloudinaryConfigured) {
+  cloudinary.config({
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
+    secure: true,
+  });
+}
 
 export const media = new Elysia({ prefix: "/media" })
-  // JWT
   .use(
     jwt({
       name: "jwt",
-      secret:
-        process.env.JWT_SECRET ||
-        "EfvVcs8ko+f8UvI6JekJFp4Hi8NnVTUhy9ZTmgViXSc=",
+      secret: JWT_SECRET || "EfvVcs8ko+f8UvI6JekJFp4Hi8NnVTUhy9ZTmgViXSc=",
     })
   )
 
-  // Endpoint [GET] /media
+  .get("/status", () => {
+    return {
+      active: isCloudinaryConfigured,
+      message: isCloudinaryConfigured
+        ? "Cloudinary is ready."
+        : "Cloudinary is not configured.",
+    };
+  })
+
+  // Global Guard: Cegah akses ke fungsi upload/delete jika config mati
+  .onBeforeHandle(({ set }) => {
+    if (!isCloudinaryConfigured) {
+      set.status = 404;
+      return {
+        error: "Media service is not available (Cloudinary config missing).",
+      };
+    }
+  })
+
   .get("/", async ({ set }) => {
     try {
       const result = await cloudinary.search
@@ -28,16 +58,14 @@ export const media = new Elysia({ prefix: "/media" })
         .sort_by("uploaded_at", "desc")
         .max_results(50)
         .execute();
-
       return result.resources;
-    } catch (error) {
-      console.error("Error fetching Cloudinary resources:", error);
+    } catch (err) {
+      console.error("Cloudinary Fetch Error:", err);
       set.status = 500;
       return { error: "Failed to fetch media" };
     }
   })
 
-  // Endpoint [POST] /media/delete
   .post(
     "/delete",
     async ({ body, set }) => {
@@ -46,22 +74,18 @@ export const media = new Elysia({ prefix: "/media" })
         await cloudinary.uploader.destroy(public_id, {
           resource_type: "image",
         });
-
-        return { success: true, public_id: public_id };
-      } catch (error) {
-        console.error("Error deleting Cloudinary resource:", error);
+        return { success: true, public_id };
+      } catch (err) {
+        console.error("Cloudinary Delete Error:", err);
         set.status = 500;
         return { error: "Failed to delete media" };
       }
     },
     {
-      body: t.Object({
-        public_id: t.String(),
-      }),
+      body: t.Object({ public_id: t.String() }),
     }
   )
 
-  // [POST] /media/upload
   .post(
     "/upload",
     async ({ body, set }) => {
@@ -74,23 +98,21 @@ export const media = new Elysia({ prefix: "/media" })
       try {
         const fileBuffer = await file.arrayBuffer();
         const b64 = Buffer.from(fileBuffer).toString("base64");
-        const dataUri = `data:${file.type};base64,${b64}`;
-        const result = await cloudinary.uploader.upload(dataUri, {
-          folder: "app_uploads",
-        });
 
+        const result = await cloudinary.uploader.upload(
+          `data:${file.type};base64,${b64}`,
+          { folder: "app_uploads" }
+        );
         return result;
-      } catch (error) {
-        console.error("Error uploading to Cloudinary:", error);
+      } catch (err) {
+        console.error("Cloudinary Upload Error:", err);
         set.status = 500;
         return { error: "Upload failed" };
       }
     },
     {
       body: t.Object({
-        file: t.File({
-          maxSize: "10m",
-        }),
+        file: t.File({ maxSize: "10m" }),
       }),
     }
   );

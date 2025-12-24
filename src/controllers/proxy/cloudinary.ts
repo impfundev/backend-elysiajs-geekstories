@@ -1,9 +1,6 @@
 import { Elysia } from "elysia";
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-if (!CLOUD_NAME)
-  throw new Error("CLOUDINARY_CLOUD_NAME environment variable is not set.");
-
 const CLOUDINARY_BASE_URL = `https://res.cloudinary.com/${CLOUD_NAME}`;
 export const cloudinaryProxy = new Elysia({ prefix: "/cld-proxy" }).get(
   "/*",

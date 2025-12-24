@@ -1,46 +1,49 @@
 import { AppDataSource } from "../src/config/database";
 import { User } from "../src/entities";
+import { createInterface } from "node:readline/promises";
+
+// 2. Buat interface readline sekali saja di luar fungsi
+const rl = createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 /**
  * Fungsi helper untuk menampilkan pertanyaan (query)
- * dan membaca satu baris input dari terminal.
+ * Menggunakan readline yang jauh lebih stabil daripada console iterator
  */
 const prompt = async (query: string): Promise<string> => {
-  console.write(`${query} `); // Tampilkan pertanyaan tanpa baris baru
+  let answer = "";
 
-  // Fitur Bun: 'console' dapat di-loop per baris sebagai stream
-  for await (const line of console) {
-    const input = line.trim();
-    if (input) {
-      return input; // Kembalikan input jika tidak kosong
+  // Loop sampai user memberikan input yang tidak kosong
+  while (!answer) {
+    answer = await rl.question(`${query} `);
+    answer = answer.trim();
+
+    if (!answer) {
+      console.log("⚠️  Input tidak boleh kosong, silakan coba lagi.");
     }
-    // Jika input kosong, tanya lagi
-    console.write(`Input tidak boleh kosong. ${query} `);
   }
-  return ""; // Fallback (seharusnya tidak tercapai)
+
+  return answer;
 };
 
 /**
  * Fungsi helper khusus untuk password.
- * Menambahkan peringatan keamanan.
  */
 const promptPassword = async (query: string): Promise<string> => {
   console.log("\n---");
   console.log("⚠️  PERHATIAN: Password akan terlihat saat diketik.");
   console.log(
-    "Untuk skrip produksi, pertimbangkan library 'prompts' untuk menyembunyikannya."
+    "Untuk produksi, gunakan library seperti 'prompts' atau 'inquirer'."
   );
   console.log("---");
 
-  let password = "";
-  while (password.length === 0) {
-    password = await prompt(query);
-  }
-  return password;
+  return await prompt(query);
 };
 
 /**
- * Fungsi utama untuk menjalankan skrip
+ * Fungsi utama
  */
 const main = async () => {
   console.log("🚀 Memulai skrip pembuatan user...");
@@ -48,14 +51,17 @@ const main = async () => {
   try {
     // 1. Inisialisasi koneksi database
     console.log("Menghubungkan ke database...");
-    await AppDataSource.initialize();
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
     console.log("Database terhubung.");
 
     // 2. Kumpulkan data dari terminal
+    // Sekarang ini akan berjalan mulus berurutan
     const name = await prompt("Nama Lengkap:");
     const username = await prompt("Username:");
     const email = await prompt("Email:");
-    const password = await promptPassword("Password:"); // Gunakan helper password
+    const password = await promptPassword("Password:");
 
     // 3. Buat dan simpan user baru
     console.log("\nMembuat user di database...");
@@ -63,9 +69,8 @@ const main = async () => {
     user.name = name;
     user.username = username;
     user.email = email;
-    user.password = password; // Hashing akan ditangani oleh hook @BeforeInsert
+    user.password = password;
 
-    // 'save()' akan memicu @BeforeInsert
     await user.save();
 
     console.log("\n✅ User berhasil dibuat!");
@@ -75,22 +80,24 @@ const main = async () => {
     console.log(`   Email: ${user.email}`);
     console.log("--------------------------");
   } catch (error: any) {
-    // 4. Tangani error (misal: duplikat username/email)
+    // 4. Tangani error
     console.error("\n❌ Gagal membuat user:");
     if (
       error.code === "SQLITE_CONSTRAINT" ||
-      error.message.includes("UNIQUE constraint failed")
+      error.message?.includes("UNIQUE constraint failed")
     ) {
       console.error("   Error: Username atau Email sudah terdaftar.");
     } else {
       console.error(`   Detail: ${error.message}`);
     }
   } finally {
-    // 5. Selalu tutup koneksi database
+    // 5. Cleanup
+    rl.close(); // PENTING: Tutup readline agar terminal tidak hang
     if (AppDataSource.isInitialized) {
       await AppDataSource.destroy();
-      console.log("\nKoneksi database ditutup.");
+      console.log("Koneksi database ditutup.");
     }
+    process.exit(0); // Pastikan proses berhenti total
   }
 };
 
