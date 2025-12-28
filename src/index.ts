@@ -6,7 +6,7 @@ import logixlysia from "logixlysia";
 
 import { initdatabase } from "./config/database";
 import { api } from "./controllers";
-import { web } from "./views";
+import { web } from "./web";
 import { cloudinaryProxy } from "./controllers/proxy/cloudinary";
 import { buildAsset } from "./utils/buildAsset";
 
@@ -20,7 +20,7 @@ const app = new Elysia()
       headers: {
         "Cache-Control": "max-age=31536000",
       },
-    })
+    }),
   )
   .use(cors())
   .use(api)
@@ -39,7 +39,7 @@ const app = new Elysia()
         customLogFormat:
           "🦊 {now} {level} {duration} {method} {pathname} {status} {message} {ip}",
       },
-    })
+    }),
   )
   .listen({
     hostname: "0.0.0.0",
@@ -47,5 +47,5 @@ const app = new Elysia()
   });
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );
